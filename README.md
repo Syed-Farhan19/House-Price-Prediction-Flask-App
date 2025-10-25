@@ -1,5 +1,4 @@
-# House Price Prediction - MLOps Lab
-
+# House Price Prediction - MLOps 
 ## Overview
 End-to-end ML pipeline for Pakistan house price prediction using DVC, Git, and Flask deployment.
 
