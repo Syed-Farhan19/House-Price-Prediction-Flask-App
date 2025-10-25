@@ -1,0 +1,111 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare.py --input data/house_prices.csv --output_dir data
+    deps:
+    - path: data/house_prices.csv
+      hash: md5
+      md5: 862ce971c086da8903e8ecc7c8a52c92
+      size: 49522076
+    - path: src/prepare.py
+      hash: md5
+      md5: 353ab2466a0318375adce69e5b6433d7
+      size: 984
+    params:
+      params.yaml:
+        prepare.random_seed: 42
+    outs:
+    - path: data/cleaned_data.csv
+      hash: md5
+      md5: 47c583e497cfc892aeae6cd31746028b
+      size: 37894995
+  features:
+    cmd: python src/features.py --input data/cleaned_data.csv --output_dir data
+    deps:
+    - path: data/cleaned_data.csv
+      hash: md5
+      md5: 47c583e497cfc892aeae6cd31746028b
+      size: 37894995
+    - path: src/features.py
+      hash: md5
+      md5: 13b09c4ca76f244a85181bf1112eddf4
+      size: 2260
+    params:
+      params.yaml:
+        features.random_state: 42
+        features.test_size: 0.2
+    outs:
+    - path: data/X_test.npy
+      hash: md5
+      md5: 66ca906ec575023cb5ff3fd0fdbadc43
+      size: 3781128
+    - path: data/X_train.npy
+      hash: md5
+      md5: 87686f844249c63ee5e9ae13feb0d040
+      size: 15123976
+    - path: data/feature_names.pkl
+      hash: md5
+      md5: 738bd34a11106c2d5914080413c8a2f3
+      size: 234
+    - path: data/label_encoders.pkl
+      hash: md5
+      md5: 54ca6d0f97dbce5ea663524ba2c9dce5
+      size: 16748642
+    - path: data/y_test.npy
+      hash: md5
+      md5: 75509f88e12486106d927d530941674b
+      size: 199128
+    - path: data/y_train.npy
+      hash: md5
+      md5: f13d8ffb9f710c7f0a9a24b9b253e2a2
+      size: 796120
+  train:
+    cmd: python src/train.py --data_dir data --model_dir models
+    deps:
+    - path: data/X_train.npy
+      hash: md5
+      md5: 87686f844249c63ee5e9ae13feb0d040
+      size: 15123976
+    - path: data/y_train.npy
+      hash: md5
+      md5: f13d8ffb9f710c7f0a9a24b9b253e2a2
+      size: 796120
+    - path: src/train.py
+      hash: md5
+      md5: ab3cd2b833d63ad5ebc686c677650dde
+      size: 1296
+    params:
+      params.yaml:
+        train.max_depth: 10
+        train.n_estimators: 100
+        train.random_state: 42
+    outs:
+    - path: models/house_price_model.pkl
+      hash: md5
+      md5: f4ff9d59456e34f583cc3288d2c4fcb3
+      size: 10989313
+  evaluate:
+    cmd: python src/evaluate.py --data_dir data --model_dir models --metrics_dir
+      metrics
+    deps:
+    - path: data/X_test.npy
+      hash: md5
+      md5: 66ca906ec575023cb5ff3fd0fdbadc43
+      size: 3781128
+    - path: data/y_test.npy
+      hash: md5
+      md5: 75509f88e12486106d927d530941674b
+      size: 199128
+    - path: models/house_price_model.pkl
+      hash: md5
+      md5: f4ff9d59456e34f583cc3288d2c4fcb3
+      size: 10989313
+    - path: src/evaluate.py
+      hash: md5
+      md5: 8c6d0b515bc58ad94cf4963c219ec646
+      size: 1577
+    outs:
+    - path: metrics/eval.json
+      hash: md5
+      md5: a20c180009d7c96d614a93618befd0d3
+      size: 97
